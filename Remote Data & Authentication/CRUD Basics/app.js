@@ -1,7 +1,7 @@
 start();
 
 function start() {
-  document.getElementById("create_btn").addEventListener("click", postData);
+  document.getElementById("editor_create").addEventListener("submit", postData);
   document.getElementById("save_btn").addEventListener("click", savePart);
   document.getElementById("load_btn").addEventListener("click", loadData);
   document.getElementById("table_body").addEventListener("click", tableAction);
@@ -10,17 +10,15 @@ function start() {
     .addEventListener("click", toggleEditors);
 }
 
-async function postData() {
-  const label = document.getElementById("part_label").value;
-  const price = Number(document.getElementById("part_price").value);
-  const qty = Number(document.getElementById("part_qty").value);
-
+async function postData(event) {
+  event.preventDefault();
+  const formData = new FormData(event.target);
   const url = "http://localhost:3030/jsonstore/autoparts";
 
   const partData = {
-    label,
-    price,
-    qty,
+    label: formData.get("label"),
+    price: Number(formData.get("price")),
+    qty: Number(formData.get("qty")),
   };
 
   const options = {
@@ -33,6 +31,7 @@ async function postData() {
   const result = await response.json();
   console.log(result);
   loadData();
+  event.target.reset();
 }
 
 async function loadData() {
